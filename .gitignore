@@ -1,0 +1,11 @@
+.git
+logs
+rebel.xml
+target/
+*.class
+
+### IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
