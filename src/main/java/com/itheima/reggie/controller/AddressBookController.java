@@ -73,4 +73,11 @@ public class AddressBookController {
         return R.success(list);
     }
 
+    @DeleteMapping
+    public R<String> delete(@RequestParam("ids") Long id) {
+        log.info("id = {}", id);
+        addressBookService.removeById(id);
+        return R.success("地址已删除");
+    }
+
 }

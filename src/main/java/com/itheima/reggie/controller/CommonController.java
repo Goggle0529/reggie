@@ -32,6 +32,7 @@ public class CommonController {
 
         //原始文件名
         String originalName = file.getOriginalFilename();
+        //截取文件后缀
         String suffix = originalName.substring(originalName.lastIndexOf("."));
 
         //使用UUID生成文件名，防止文件名称重复造成文件覆盖。

@@ -108,7 +108,7 @@ public class DishController {
 
         dishDtoPage.setRecords(list);
 
-        return R.success(pageInfo);
+        return R.success(dishDtoPage);
     }
 
     @GetMapping("/{id}")
@@ -214,6 +214,40 @@ public class DishController {
         redisTemplate.opsForValue().set(key, dishDtoList, 1, TimeUnit.HOURS);
 
         return R.success(dishDtoList);
+    }
+
+    @DeleteMapping
+    public R<String> delete(@RequestParam("ids") List<Long> ids) {
+        //删除菜品  这里的删除是逻辑删除
+        dishService.deleteByIds(ids);
+        //删除菜品对应的口味  也是逻辑删除
+        LambdaQueryWrapper<DishFlavor> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(DishFlavor::getDishId,ids);
+        dishFlavorService.remove(queryWrapper);
+
+        //清理所有菜品的缓存数据
+        Set keys = redisTemplate.keys("dish_*");
+        redisTemplate.delete(keys);
+        return R.success("菜品删除成功");
+    }
+
+    @PostMapping("/status/{status}")
+    public R<String> status(@PathVariable("status") Integer status, @RequestParam List<Long> ids) {
+        LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(ids != null, Dish::getId, ids);
+        List<Dish> list = dishService.list(queryWrapper);
+        for (Dish dish : list) {
+            if (dish != null) {
+                dish.setStatus(status);
+                dishService.updateById(dish);
+            }
+        }
+
+        //清理所有菜品的缓存数据
+        Set keys = redisTemplate.keys("dish_*");
+        redisTemplate.delete(keys);
+
+        return R.success("售卖状态修改成功");
     }
 
 }

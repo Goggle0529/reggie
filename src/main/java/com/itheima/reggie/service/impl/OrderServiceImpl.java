@@ -102,4 +102,12 @@ public class OrderServiceImpl extends ServiceImpl<OrdersMapper, Orders> implemen
         shoppingCartService.remove(queryWrapper);
     }
 
+    @Override
+    public List<OrderDetail> getOrderDetailListByOrderId(Long orderId) {
+        LambdaQueryWrapper<OrderDetail> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(OrderDetail::getOrderId, orderId);
+        List<OrderDetail> list = orderDetailService.list(queryWrapper);
+        return list;
+    }
+
 }

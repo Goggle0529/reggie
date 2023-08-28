@@ -7,6 +7,10 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+/**
+ * @author 74197
+ * 需要对key序列化，不然redis客户端存储的字符就不方便阅读。
+ */
 @Configuration
 public class RedisConfig extends CachingConfigurerSupport {
     @Bean
